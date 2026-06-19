@@ -17,6 +17,9 @@ server.use(express.json());
 const PORT = process.env.PORT || 3050;
 
 // ── Routes ────────────────────────────────────────────────
+const authRoute = require ("./routes/auth.route")
+server.use("/api/login", authRoute);
+
 const heroRoute = require("./routes/hero.route");
 server.use("/api/hero", heroRoute);
 const adminHeroRoute = require("./routes/admin.hero.route");

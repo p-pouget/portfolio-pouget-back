@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Hero = require("../models/hero.model");
+const verifyAdmin = require("../middlewares/auth.middleware");
+
+router.use(verifyAdmin); // router l'utilise pour chaque route dans le fichier
 
 // CREATE
 router.post("/create", async (req, res) => {

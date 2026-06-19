@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+
 
 // les routes spécifiques/fixes toujours avant les routes dynamiques (:param) car ces dernieres attrape tout. Express ne fait aucun tri par "précision", il prend juste la première qui matche.
 
@@ -27,3 +27,5 @@ router.get("/experience/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+module.exports = router;
