@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Identifiant/mot de passe invalide" }); // 401 = échec d'authentification
     }
 
-    const token = jwt.sign(
+    const token = jwt.sign( // .sign calcul grace au donnée fourni une signature hash
       { id: user._id, username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: "4h" }
