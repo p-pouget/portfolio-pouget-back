@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const UserModel = require("../models/user.model");
+const verifyAdmin = require("../middlewares/auth.middleware");
 
 router.post("/", async (req, res) => {
   try {
@@ -25,10 +26,17 @@ router.post("/", async (req, res) => {
     const token = jwt.sign( // .sign calcul grace au donnée fourni une signature hash
       { id: user._id, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: "4h" }
+      { expiresIn: "2h" }
     );
 
-    res.json({ token, email: user.email, message: "Vous êtes connecté" });
+    // cookie plutot qu'un bearer. Le navigateur l'envoie automatiquement vers le backend auquel il est associé meme sur différent port/domaine
+    res.cookie("token", token, {
+      httpOnly: true, // Inaccessible au JS = bloquer par le navigateur
+      secure: process.env.SECURE_COOKIE ? true : false, // pour la production, accepte connexion hors https || .env dev : variable absente = false boléen.. non string || .env deploy : SECURE_COOKIE=true
+      maxAge: 3600*1000*2
+    })
+
+    res.status(200).json({ message: "Vous êtes connecté"});
   } catch (err) {
     res.status(500).json({ error: err.message }); // 500 = erreur serveur inattendue
   }

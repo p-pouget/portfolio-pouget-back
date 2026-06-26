@@ -6,12 +6,14 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
  
 const server = express();
  
 // ── Sécurité & Middleware ─────────────────────────────────
 server.use(helmet()); // Headers HTTP sécurisés                                
-server.use(cors({ origin: [process.env.CLIENT_URL, process.env.ADMIN_URL] })) // CORS restreint au front
+server.use(cors({ origin: [process.env.CLIENT_URL, process.env.ADMIN_URL], credentials: true })) // CORS restreint au front + redential true pour le cookie sinon le navigateur refuse d'envoyer/recevoir les cookies cross-origin(port ou domaine different).
+server.use(cookieParser());
 server.use(express.json());
  
 const PORT = process.env.PORT || 3050;
@@ -19,6 +21,8 @@ const PORT = process.env.PORT || 3050;
 // ── Routes ────────────────────────────────────────────────
 const authRoute = require ("./routes/auth.route")
 server.use("/api/login", authRoute);
+const utilsRoute = require ("./routes/admin.utils.route")
+server.use("/api/admin/utils", utilsRoute)
 
 const heroRoute = require("./routes/hero.route");
 server.use("/api/hero", heroRoute);
