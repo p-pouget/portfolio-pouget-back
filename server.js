@@ -23,6 +23,8 @@ const authRoute = require ("./routes/auth.route")
 server.use("/api/login", authRoute);
 const utilsRoute = require ("./routes/admin.utils.route")
 server.use("/api/admin/utils", utilsRoute)
+const contactRoute = require("./routes/contact.route");
+server.use("/api/contact", contactRoute);
 
 const heroRoute = require("./routes/hero.route");
 server.use("/api/hero", heroRoute);
@@ -43,6 +45,7 @@ const projetsRoute = require("./routes/projets.route");
 server.use("/api/projets", projetsRoute);
 const adminProjetsRoute = require("./routes/admin.projets.route");
 server.use("/api/admin/projets", adminProjetsRoute);
+
 
 
 // ── 404 catch-all (toujours en dernier) ──────────────────
