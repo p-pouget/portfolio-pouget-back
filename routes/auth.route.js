@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true, // Inaccessible au JS = bloquer par le navigateur
       secure: process.env.SECURE_COOKIE ? true : false, // pour la production, accepte connexion hors https || .env dev : variable absente = false boléen.. non string || .env deploy : SECURE_COOKIE=true
+      sameSite: "none", // Autorise le cookie a partir sur d'autre domaine
       maxAge: 3600*1000*2
     })
 
