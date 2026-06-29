@@ -20,7 +20,8 @@ router.post("/", async (req, res) => {
 
 router.put("/all/:id", async (req, res) => {
   try {
-    const hero = await Hero.findByIdAndUpdate(req.params.id, req.body, { new: true }); // { new: true } Force l'affichage de la nouvelle version le temps que la BDD reponde
+    const valeurs = [req.body.valeur1, req.body.valeur2, req.body.valeur3];  // IMPORTANT sinon tableau avec un seul string. !Affichage
+    const hero = await Hero.findByIdAndUpdate(req.params.id, { titre: req.body.titre, valeurs, description: req.body.description }, { new: true }); // { new: true } Force l'affichage de la nouvelle version le temps que la BDD reponde
     if (!hero) return res.status(404).json({ error: "Informations introuvable" });
     res.json({ id: req.params.id }); // REACT ADMIN a besoin d'un id pour remettre a jour son cache.
   } catch (err) {

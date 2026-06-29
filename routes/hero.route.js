@@ -18,18 +18,24 @@ router.get("/", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const hero = await Hero.findOne(); // findOne() renvoi l'objet unique (Hero) et non un tableau comme find()
-    if (!hero) return res.status(404).json({ error: "Informations introuvable" });
+    if (!hero)
+      return res.status(404).json({ error: "Informations introuvable" });
 
-    const data = [{ // EMPAQUETAGE DANS TABLEAU + INSERTION id: POUR REACT ADMIN car parametrage du datagrid = getlist obligatoire
-      id: hero.id,
-      titre: hero.titre,
-      valeurs: hero.valeurs,
-      description: hero.description
-    }];
+    const data = [
+      {
+        // EMPAQUETAGE DANS TABLEAU + INSERTION id: POUR REACT ADMIN car parametrage du datagrid = getlist obligatoire
+        id: hero.id,
+        titre: hero.titre,
+        valeur1: hero.valeurs[0] || "", // IMPORTANT sinon tableau avec un seul string. !Affichage
+        valeur2: hero.valeurs[1] || "",
+        valeur3: hero.valeurs[2] || "",
+        description: hero.description,
+      },
+    ];
 
     // Pour envoyer dans le HEADER (Donc a react admin) le nombre de resultat (gestion pagination)
-    res.set('Content-Range', `hero 0-${data.length}/${data.length}`) // Nombre de resultat stocker dans content-Range. data.length pour entretien futur ( actuel = 1)
-    res.set('Access-Control-Expose-Headers', 'Content-Range') // Autorise content-range dans le header
+    res.set("Content-Range", `hero 0-${data.length}/${data.length}`); // Nombre de resultat stocker dans content-Range. data.length pour entretien futur ( actuel = 1)
+    res.set("Access-Control-Expose-Headers", "Content-Range"); // Autorise content-range dans le header
 
     res.json(data);
   } catch (err) {
@@ -42,13 +48,17 @@ router.get("/all", async (req, res) => {
 router.get("/all/:id", async (req, res) => {
   try {
     const hero = await Hero.findOne(); // findOne() renvoi l'objet unique (Hero) et non un tableau comme find()
-    if (!hero) return res.status(404).json({ error: "Informations introuvable" });
+    if (!hero)
+      return res.status(404).json({ error: "Informations introuvable" });
 
-    res.json({ // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
+    res.json({
+      // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
       id: hero.id,
       titre: hero.titre,
-      valeurs: hero.valeurs,
-      description: hero.description
+      valeur1: hero.valeurs[0] || "", // IMPORTANT sinon tableau avec un seul string. !Affichage
+      valeur2: hero.valeurs[1] || "",
+      valeur3: hero.valeurs[2] || "",
+      description: hero.description,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
