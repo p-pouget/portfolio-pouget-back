@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
+const handleError = require("../utils/handleError");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -24,7 +25,7 @@ router.post("/", async (req, res) => {
 
     res.status(200).json({ message: "Email envoyé." });
   } catch (err) {
-    res.status(500).json({ message: "Échec de l'envoi." });
+    handleError(res, err);
   }
 });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Projets = require("../models/projets.model");
+const handleError = require("../utils/handleError");
 
 // GET + GET/:id REACT ADMIN (hors selected) + FRONT (all)
 
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
     
     res.json(projets);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -23,7 +24,7 @@ router.get("/selected", async (req, res) => {
     const projets = await Projets.find({ selected: true }).limit(3);
     res.json(projets);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -32,10 +33,10 @@ router.get("/selected", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const projet = await Projets.findById(req.params.id);
-    if (!projet) return res.status(404).json({ error: "Projet introuvable" });
+    if (!projet) return handleError(res);
      res.json(projet);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 

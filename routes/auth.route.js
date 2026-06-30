@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const handleError = require("../utils/handleError");
 
 const UserModel = require("../models/user.model");
 const verifyAdmin = require("../middlewares/auth.middleware");
@@ -10,17 +11,17 @@ router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: "Les champs sont requis" }); // 400 = Champs manquants ou validation Mongoose échouée
+      return handleError(res);
     }
 
     const user = await UserModel.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Identifiant/mot de passe invalide" }); // 401 = échec d'authentification
+      return handleError(res);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Identifiant/mot de passe invalide" }); // 401 = échec d'authentification
+      return handleError(res);
     }
 
     const token = jwt.sign( // .sign calcul grace au donnée fourni une signature hash
@@ -39,7 +40,7 @@ router.post("/", async (req, res) => {
 
     res.status(200).json({ message: "Vous êtes connecté"});
   } catch (err) {
-    res.status(500).json({ error: err.message }); // 500 = erreur serveur inattendue
+    handleError(res, err);
   }
 });
 

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Curriculum = require("../models/curriculum.model");
 const verifyAdmin = require("../middlewares/auth.middleware");
+const handleError = require("../utils/handleError");
 
 router.use(verifyAdmin); // router l'utilise pour chaque route dans le fichier
 
@@ -12,7 +13,7 @@ router.post("/", async (req, res) => {
     const curriculum = await Curriculum.create(req.body);
     res.status(201).json(curriculum);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -30,10 +31,10 @@ router.put("/competences/:id", async (req, res) => {
     );
 
     if (!curriculum)
-      return res.status(404).json({ error: "Curriculum introuvable" });
+      return handleError(res);
     res.status(200).json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache et dans ce cas la ... virtual id = id curriculum (hack)
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -50,10 +51,11 @@ router.post("/experiences", async (req, res) => {
       { $push: { experiences: req.body } }, // = curriculum.experiences.push(req.body) . Ajoute un élement
       { new: true }
     );
+    if (!curriculum) return handleError(res);
     const newExp = curriculum.experiences[curriculum.experiences.length - 1]; // POST > REACT ADMIN demande en res l'élément créé.
     res.status(201).json(newExp);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -64,10 +66,10 @@ router.put("/experiences/:id", async (req, res) => {
       { $set: { "experiences.$": req.body } }, // $set modifie un champ précis et le $ seul (experiences.$) = élément trouvé par le filtre au dessus
       { new: true }
     );
-    if (!curriculum) return res.status(404).json({ error: "Expérience introuvable" });
+    if (!curriculum) return handleError(res);
     res.status(200).json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -78,10 +80,10 @@ router.delete("/experiences/:id", async (req, res) => {
       { $pull: { experiences: { _id: req.params.id } } }, // = curriculum.experiences.pull(id) . Retire un élément du tableau
       { new: true }
     );
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
     res.json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -94,10 +96,11 @@ router.post("/formations", async (req, res) => {
       { $push: { formations: req.body } }, // = curriculum.experiences.push(req.body) . Ajoute un élement
       { new: true }
     );
+    if (!curriculum) return handleError(res);
     const newForm = curriculum.formations[curriculum.formations.length - 1];
     res.status(201).json(newForm); // POST > REACT ADMIN demande en res l'élément créé.
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -108,10 +111,10 @@ router.put("/formations/:id", async (req, res) => {
       { $set: { "formations.$": req.body } }, // $set modifie un champ précis et le $ seul (experiences.$) = élément trouvé par le filtre au dessus
       { new: true }
     );
-    if (!curriculum) return res.status(404).json({ error: "Formation introuvable" });
+    if (!curriculum) return handleError(res);
     res.status(200).json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -122,10 +125,10 @@ router.delete("/formations/:id", async (req, res) => {
       { $pull: { formations: { _id: req.params.id } } }, // = curriculum.experiences.pull(id) . Retire un élément du tableau
       { new: true }
     );
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
     res.json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -140,10 +143,10 @@ router.put("/photoUrl/:id", async (req, res) => {
     );
 
     if (!curriculum)
-      return res.status(404).json({ error: "Curriculum introuvable" });
+      return handleError(res);
     res.status(200).json({ id: req.params.id }); // PUT and DELETE > REACT ADMIN a besoin d'un id pour remettre a jour son cache et dans ce cas la ... virtual id = id curriculum (hack)
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 

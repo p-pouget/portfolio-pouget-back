@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Curriculum = require("../models/curriculum.model");
+const handleError = require("../utils/handleError");
 
 // GET > REACT FRONT
 
@@ -9,7 +10,7 @@ router.get("/", async (req, res) => {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi un objet unique et non un tableau comme find()
     res.json(curriculum);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
 router.get("/competences", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi l'objet unique (Curriculum) et non un tableau comme find()
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const data = [{ // EMPAQUETAGE DANS TABLEAU + INSERTION id: POUR REACT ADMIN car parametrage du datagrid = getlist obligatoire
       id: curriculum.id, // Hack = attribution id via curriculum.id ( pas d'attribution via virtual id)
@@ -33,14 +34,14 @@ router.get("/competences", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/experiences", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne();
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const data = curriculum.experiences
 
@@ -50,14 +51,14 @@ router.get("/experiences", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/formations", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne();
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const data = curriculum.formations
 
@@ -67,14 +68,14 @@ router.get("/formations", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/photoUrl", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne();
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const data = [{ // EMPAQUETAGE DANS TABLEAU + INSERTION id: POUR REACT ADMIN car parametrage du datagrid = getlist obligatoire
       id: curriculum.id, // Hack = attribution id via curriculum.id ( pas d'attribution via virtual id)
@@ -87,7 +88,7 @@ router.get("/photoUrl", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -98,7 +99,7 @@ router.get("/photoUrl", async (req, res) => {
 router.get("/competences/:id", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi l'objet unique (Curriculum) et non un tableau comme find()
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     res.json({ // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
       id: curriculum.id,
@@ -107,47 +108,47 @@ router.get("/competences/:id", async (req, res) => {
       langues: curriculum.competences.langues
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/experiences/:id", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi l'objet unique (Curriculum) et non un tableau comme find()
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const experience = curriculum.experiences.id(req.params.id); // .id = methode Mongoose pour les subdocoments c'est à dire deja en mémoire
-    if (!experience) return res.status(404).json({ error: "Expérience introuvable" });
+    if (!experience) return handleError(res);
     res.json(experience);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/formations/:id", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi l'objet unique (Curriculum) et non un tableau comme find()
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     const formation = curriculum.formations.id(req.params.id); // .id = methode Mongoose pour les subdocoments c'est à dire deja en mémoire
-    if (!formation) return res.status(404).json({ error: "Formation introuvable" });
+    if (!formation) return handleError(res);
     res.json(formation);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
 router.get("/photoUrl/:id", async (req, res) => {
   try {
     const curriculum = await Curriculum.findOne(); // findOne() renvoi l'objet unique (Curriculum) et non un tableau comme find()
-    if (!curriculum) return res.status(404).json({ error: "Curriculum introuvable" });
+    if (!curriculum) return handleError(res);
 
     res.json({ // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
       id: curriculum.id,
       photo: curriculum.photo
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 

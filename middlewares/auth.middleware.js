@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+// Pas de handleError ici pour garder error 401 ( erreur auth) donc message generaliste
 
 function verifyAdmin(req, res, next) {
   try {
@@ -6,7 +7,7 @@ function verifyAdmin(req, res, next) {
     const token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ message: "Token manquant" });
+      return res.status(401).json({ message: "Authentification requise" }); // 401 = échec d'authentification
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -15,8 +16,8 @@ function verifyAdmin(req, res, next) {
 
     next();
   } catch (err) {
-    console.log(err);
-    return res.status(401).json({ message: "Token invalide ou expiré" }); // 401 = échec d'authentification
+    console.error(err) // Pour log serveur
+    return res.status(401).json({ message: "Authentification requise" }); // 401 = échec d'authentification
   }
 }
 

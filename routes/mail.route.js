@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Mail = require("../models/mail.model");
+const handleError = require("../utils/handleError");
 
 // GET > REACT FRONT
 
@@ -9,7 +10,7 @@ router.get("/", async (req, res) => {
     const mail = await Mail.findOne(); // findOne() renvoi un objet unique et non un tableau comme find()
     res.json(mail);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
 router.get("/contact", async (req, res) => {
   try {
     const mail = await Mail.findOne(); // findOne() renvoi l'objet unique (Mail) et non un tableau comme find()
-    if (!mail) return res.status(404).json({ error: "Email introuvable" });
+    if (!mail) return handleError(res);
 
     const data = [{ // EMPAQUETAGE DANS TABLEAU + INSERTION id: POUR REACT ADMIN car parametrage du datagrid = getlist obligatoire
       id: mail.id,
@@ -31,7 +32,7 @@ router.get("/contact", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -40,14 +41,14 @@ router.get("/contact", async (req, res) => {
 router.get("/contact/:id", async (req, res) => {
   try {
     const mail = await Mail.findOne(); // findOne() renvoi l'objet unique (Mail) et non un tableau comme find()
-    if (!mail) return res.status(404).json({ error: "Email introuvable" });
+    if (!mail) return handleError(res);
 
     res.json({ // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
       id: mail.id,
       email: mail.email,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 

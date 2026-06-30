@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Mail = require("../models/mail.model");
 const verifyAdmin = require("../middlewares/auth.middleware");
+const handleError = require("../utils/handleError");
 
 router.use(verifyAdmin); // router l'utilise pour chaque route dans le fichier
 
@@ -12,7 +13,7 @@ router.post("/", async (req, res) => {
     const mail = await Mail.create(req.body);
     res.status(201).json(mail);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -21,10 +22,10 @@ router.post("/", async (req, res) => {
 router.put("/contact/:id", async (req, res) => {
   try {
     const mail = await Mail.findByIdAndUpdate(req.params.id, req.body, { new: true }); // { new: true } Force l'affichage de la nouvelle version le temps que la BDD reponde
-    if (!mail) return res.status(404).json({ error: "Informations introuvable" });
+    if (!mail) return handleError(res);
     res.json({ id: req.params.id }); // REACT ADMIN a besoin d'un id pour remettre a jour son cache.
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    handleError(res, err);
   }
 });
 

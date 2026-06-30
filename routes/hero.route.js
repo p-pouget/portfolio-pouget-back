@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Hero = require("../models/hero.model");
+const handleError = require("../utils/handleError");
 
 // GET > REACT FRONT
 
@@ -9,7 +10,7 @@ router.get("/", async (req, res) => {
     const hero = await Hero.findOne(); // findOne() renvoi un objet unique et non un tableau comme find()
     res.json(hero);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -19,7 +20,7 @@ router.get("/all", async (req, res) => {
   try {
     const hero = await Hero.findOne(); // findOne() renvoi l'objet unique (Hero) et non un tableau comme find()
     if (!hero)
-      return res.status(404).json({ error: "Informations introuvable" });
+      return handleError(res);
 
     const data = [
       {
@@ -39,7 +40,7 @@ router.get("/all", async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
@@ -49,7 +50,7 @@ router.get("/all/:id", async (req, res) => {
   try {
     const hero = await Hero.findOne(); // findOne() renvoi l'objet unique (Hero) et non un tableau comme find()
     if (!hero)
-      return res.status(404).json({ error: "Informations introuvable" });
+      return handleError(res);
 
     res.json({
       // Structuration en object pour /:id. Nécéssaire pour getOne(DataGrid) React Admin
@@ -61,7 +62,7 @@ router.get("/all/:id", async (req, res) => {
       description: hero.description,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(res, err);
   }
 });
 
